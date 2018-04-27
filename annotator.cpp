@@ -22,20 +22,6 @@ namespace {
 	};
 }
 
-void NameAnnotatorPass::printIntValue(Value* intValue) {
-    if (ConstantInt* CI = dyn_cast<ConstantInt>(intValue)) {
-        if (CI->getBitWidth() <= 64) {
-            int constIntValue = CI->getSExtValue();
-            errs() << constIntValue << ".";
-        }
-    }
-    else {
-        // foo was not actually a ConstantInt
-        errs() << "(not constant).";
-        intValue->dump();
-    }
-}
-
 std::string NameAnnotatorPass::identifierForType(Type* t) {
     auto typeID = t->getTypeID();
     /*
