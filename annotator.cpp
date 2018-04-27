@@ -90,10 +90,13 @@ bool NameAnnotatorPass::runOnFunction(Function &F) {
         functionArguments.push_back(A);
     }
 
-    for (auto A  = std::begin(functionArguments); A != std::end(functionArguments); A++) {
-        auto arg = *A;
-        auto typeIdentifier = identifierForType(arg->getType());
-        ss << typeIdentifier;
+    if (functionArguments.size() > 0) {
+        ss << "@";
+        for (auto A  = std::begin(functionArguments); A != std::end(functionArguments); A++) {
+            auto arg = *A;
+            auto typeIdentifier = identifierForType(arg->getType());
+            ss << typeIdentifier;
+        }
     }
 
     auto annotatedName = ss.str();
