@@ -3,6 +3,8 @@ LLVMTypeAnnotator
 
 This is a simple LLVM pass to mangle symbols to retain the type information of arguments and return value.
 
+`_strlen --> _strlen@i@p`
+
 It was made to familiarize myself a bit with LLVM passes.
 
 Usage
