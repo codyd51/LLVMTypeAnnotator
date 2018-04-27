@@ -34,6 +34,10 @@ void NameAnnotatorPass::printIntValue(Value* intValue) {
 bool NameAnnotatorPass::runOnFunction(Function &F) {
 	auto name = F.getName();
     auto annotatedName = name;
+    //don't modify main symbol
+    if (name == "main") {
+        return false;
+    }
 
     std::vector<Argument*> functionArguments;
     for (auto A = F.arg_begin(); A != F.arg_end(); A++) {
