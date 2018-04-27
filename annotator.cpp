@@ -14,6 +14,7 @@ namespace {
 		NameAnnotatorPass() : FunctionPass(ID) {}
         bool runOnFunction(Function &F) override;
         void printIntValue(Value* intValue);
+        std::string identifierForType(Type* t);
 	};
 }
 
@@ -29,6 +30,54 @@ void NameAnnotatorPass::printIntValue(Value* intValue) {
         errs() << "(not constant).";
         intValue->dump();
     }
+}
+
+std::string NameAnnotatorPass::identifierForType(Type* t) {
+    auto typeID = t->getTypeID();
+    /*
+    // PrimitiveTypes - make sure LastPrimitiveTyID stays up to date.
+    57     VoidTyID = 0,    ///<  0: type with no size
+    58     HalfTyID,        ///<  1: 16-bit floating point type
+    59     FloatTyID,       ///<  2: 32-bit floating point type
+    60     DoubleTyID,      ///<  3: 64-bit floating point type
+    61     X86_FP80TyID,    ///<  4: 80-bit floating point type (X87)
+    62     FP128TyID,       ///<  5: 128-bit floating point type (112-bit mantissa)
+    63     PPC_FP128TyID,   ///<  6: 128-bit floating point type (two 64-bits, PowerPC)
+    64     LabelTyID,       ///<  7: Labels
+    65     MetadataTyID,    ///<  8: Metadata
+    66     X86_MMXTyID,     ///<  9: MMX vectors (64 bits, X86 specific)
+    67     TokenTyID,       ///< 10: Tokens
+    68
+    69     // Derived types... see DerivedTypes.h file.
+    70     // Make sure FirstDerivedTyID stays up to date!
+    71     IntegerTyID,     ///< 11: Arbitrary bit width integers
+    72     FunctionTyID,    ///< 12: Functions
+    73     StructTyID,      ///< 13: Structures
+    74     ArrayTyID,       ///< 14: Arrays
+    75     PointerTyID,     ///< 15: Pointers
+    76     VectorTyID       ///< 16: SIMD 'packed' format, or other vector type
+    */
+    std::map<Type::TypeID, std::string> type_identifiers = {
+        {Type::TypeID::VoidTyID, "v"},
+        {Type::TypeID::HalfTyID, "f"},
+        {Type::TypeID::FloatTyID, "f"},
+        {Type::TypeID::DoubleTyID, "f"},
+        {Type::TypeID::X86_FP80TyID, "f"},
+        {Type::TypeID::FP128TyID, "f"},
+        {Type::TypeID::PPC_FP128TyID, "f"},
+        {Type::TypeID::LabelTyID, "C"},
+        {Type::TypeID::MetadataTyID, "X"},
+        {Type::TypeID::X86_MMXTyID, "M"},
+        {Type::TypeID::TokenTyID, "t"},
+        //derived types
+        {Type::TypeID::IntegerTyID, "i"},
+        {Type::TypeID::FunctionTyID, "F"},
+        {Type::TypeID::StructTyID, "S"},
+        {Type::TypeID::ArrayTyID, "A"},
+        {Type::TypeID::PointerTyID, "p"},
+        {Type::TypeID::VectorTyID, "A"},
+    };
+    return type_identifiers[typeID];
 }
 
 bool NameAnnotatorPass::runOnFunction(Function &F) {
