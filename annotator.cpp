@@ -83,7 +83,7 @@ bool NameAnnotatorPass::runOnFunction(Function &F) {
         return false;
     }
 
-    ss << name.str() << "__returns_" << identifierForType(F.getReturnType()) << "__args_";
+    ss << name.str() << "@" << identifierForType(F.getReturnType());
 
     std::vector<Argument*> functionArguments;
     for (auto A = F.arg_begin(); A != F.arg_end(); A++) {
