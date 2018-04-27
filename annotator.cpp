@@ -1,3 +1,7 @@
+#include <string>
+#include <sstream>
+#include <iostream>
+
 #include "llvm/Pass.h"
 #include "llvm/IR/Function.h"
 #include "llvm/IR/InstrTypes.h"
@@ -81,12 +85,14 @@ std::string NameAnnotatorPass::identifierForType(Type* t) {
 }
 
 bool NameAnnotatorPass::runOnFunction(Function &F) {
+    std::stringstream ss;
 	auto name = F.getName();
-    auto annotatedName = name;
     //don't modify main symbol
     if (name == "main") {
         return false;
     }
+
+    ss << name.str() << "__returns_" << identifierForType(F.getReturnType()) << "__args_";
 
     std::vector<Argument*> functionArguments;
     for (auto A = F.arg_begin(); A != F.arg_end(); A++) {
@@ -95,15 +101,13 @@ bool NameAnnotatorPass::runOnFunction(Function &F) {
 
     for (auto A  = std::begin(functionArguments); A != std::end(functionArguments); A++) {
         auto arg = *A;
-        arg->dump();
+        auto typeIdentifier = identifierForType(arg->getType());
+        ss << typeIdentifier;
     }
 
-    /*
-	auto name = StringRef(origName + "_but_unironically");
-	F.setName(Twine(name));
-    */
-    errs() << "type-annotator: " << name << " -> " << annotatedName << "\n";
+    auto annotatedName = ss.str();
     F.setName(Twine(annotatedName));
+    errs() << "type-annotator: " << name << " -> " << annotatedName << "\n";
 
 	return true;
 }
