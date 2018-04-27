@@ -23,9 +23,11 @@ namespace {
 }
 
 std::string NameAnnotatorPass::identifierForType(Type* t) {
-    auto typeID = t->getTypeID();
+    /*!
+     * Return a length-1 string representing an LLVM Type
+     */
+
     /*
-    // PrimitiveTypes - make sure LastPrimitiveTyID stays up to date.
     57     VoidTyID = 0,    ///<  0: type with no size
     58     HalfTyID,        ///<  1: 16-bit floating point type
     59     FloatTyID,       ///<  2: 32-bit floating point type
@@ -67,10 +69,13 @@ std::string NameAnnotatorPass::identifierForType(Type* t) {
         {Type::TypeID::PointerTyID, "p"},
         {Type::TypeID::VectorTyID, "A"},
     };
-    return type_identifiers[typeID];
+    return type_identifiers[t->getTypeID()];
 }
 
 bool NameAnnotatorPass::runOnFunction(Function &F) {
+    /*!
+     * Mangle each viable symbol in the binary to include type information.
+     */
     std::stringstream ss;
 	auto name = F.getName();
     //don't modify main symbol
